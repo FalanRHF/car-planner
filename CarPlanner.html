@@ -1,0 +1,192 @@
+<!-- version 1 written by Falan ^^ -->
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Car Planner</title>
+	<style>
+		.tab {
+			display: none;
+		}
+
+		.active {
+			display: block;
+		}
+
+		.buttons {
+			margin: 0 auto;
+		}
+
+		.tab-button {
+			display: inline-block;
+			margin: 0 auto;
+			width: 400px;
+		}
+
+		button {
+			display: inline;
+			/* Make the buttons inline-block elements */
+			background-color: #ccc;
+			color: white;
+			border: none;
+			padding: 10px 20px;
+			font-size: 16px;
+			cursor: pointer;
+		}
+
+		button.active {
+			background-color: #4CAF50;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="buttons">
+		<button class="tab-button active" onclick="switchTab(event, 'tab1')">Calculate Monthly Installment</button>
+		<button class="tab-button" onclick="switchTab(event, 'tab2')">Calculate Car Price</button>
+	</div>
+	<div>
+		<div id="tab1" class="tab active">
+			<h1>Calculate Monthly Installment</h1>
+			<form>
+				<label for="car-price">Car Price:</label>
+				<input type="range" id="car-price-tab-1" min="0" max="100000" value="50000" step="1000"
+					oninput="calculateLoan()">
+				<p>Car Price: RM<span id="car-price-display-tab-1">50,000</span></p>
+
+				<label for="down-payment">Down Payment:</label>
+				<input type="range" id="down-payment-tab-1" min="0" max="50000" value="5000" step="500"
+					oninput="calculateLoan()">
+				<p>Down Payment: RM<span id="down-payment-display-tab-1">5,000</span></p>
+
+				<label for="interest-rate">Annual Interest Rate:</label>
+				<input type="range" id="interest-rate-tab-1" min="0" max="10" value="3.5" step="0.1" oninput="calculateLoan()">
+				<p>Annual Interest Rate: <span id="interest-rate-display-tab-1">3.5</span>%</p>
+
+				<label for="loan-years">Loan Years:</label>
+				<input type="range" id="loan-years-tab-1" min="1" max="10" value="7" step="1" oninput="calculateLoan()">
+				<p>Loan Years: <span id="loan-years-display-tab-1">7</span></p>
+				<br />
+				<p>Monthly Installment: RM<span id="monthly-installment-tab-1">666.96</span></p>
+				<p>Loan Amount: RM<span id="loan-amount-tab-1">45,000</span></p>
+				<p>Total Interest: RM<span id="total-interest-tab-1">11,025.00</span></p>
+				<p>Total Payment: RM<span id="total-payment-tab-1">56,025</span></p>
+			</form>
+		</div>
+
+		<div id="tab2" class="tab">
+			<h1>Calculate Car Price</h1>
+			<form>
+				<label for="monthly-income">Monthly Income:</label>
+				<input type="range" id="monthly-income" min="0" max="10000" value="3000" step="100" oninput="calculatePrice()">
+				<p>Monthly Income: RM<span id="monthly-income-display">3,000</span></p>
+
+				<label for="installment-percentage">Installment Percentage:</label>
+				<input type="range" id="installment-percentage" min="0" max="100" value="15" step="1"
+					oninput="calculatePrice()">
+				<p>Installment Percentage: <span id="installment-percentage-display">15</span>%</p>
+
+				<label for="downpayment-percentage">Downpayment Percentage:</label>
+				<input type="range" id="downpayment-percentage" min="0" max="100" value="10" step="5"
+					oninput="calculatePrice()"> <span id="dp-100-alert"></span>
+				<p>Downpayment Percentage: <span id="downpayment-percentage-display">10</span>%</p>
+
+				<label for="interest-rate">Annual Interest Rate:</label>
+				<input type="range" id="interest-rate-tab-2" min="0" max="20" value="3.5" step="0.1" oninput="calculatePrice()">
+				<p>Annual Interest Rate: <span id="interest-rate-display-tab-2">3.5</span>%</p>
+
+				<label for="loan-years">Loan Years:</label>
+				<input type="range" id="loan-years-tab-2" min="1" max="10" value="7" step="1" oninput="calculatePrice()">
+				<p>Loan Years: <span id="loan-years-display-tab-2">7</span></p>
+				<br />
+				<p>Car Price: RM<span id="car-price-tab-2">33,735</span></p>
+				<p>Down payment: RM<span id="down-payment-tab-2">3,373</span></p>
+				<p>Monthly installment: RM<span id="monthly-installment-tab-2">450.00</span></p>
+			</form>
+		</div>
+	</div>
+
+	<script>
+		function switchTab(event, tabName) {
+			// Get all the tab buttons and tabs
+			const tabButtons = document.getElementsByClassName("tab-button");
+			const tabs = document.getElementsByClassName("tab");
+
+			// Remove the "active" class from all the tab buttons and tabs
+			for (let i = 0; i < tabButtons.length; i++) {
+				tabButtons[i].classList.remove("active");
+			}
+			for (let i = 0; i < tabs.length; i++) {
+				tabs[i].classList.remove("active");
+			}
+
+			// Add the "active" class to the clicked tab button and corresponding tab
+			event.currentTarget.classList.add("active");
+			document.getElementById(tabName).classList.add("active");
+		}
+
+		function calculateLoan() {
+			// Get the input values
+			const carPrice = document.getElementById("car-price-tab-1").value;
+			const downPayment = document.getElementById("down-payment-tab-1").value;
+			const annualInterestRate = parseFloat(document.getElementById("interest-rate-tab-1").value);
+			const loanYears = document.getElementById("loan-years-tab-1").value;
+
+			// Calculate the loan amount and monthly payment
+			const loanAmount = carPrice - downPayment;
+			// const monthlyInterestRate = annualInterestRate / (12 * 100);
+			// const months = loanYears * 12;
+			const totalInterest = loanAmount * annualInterestRate * loanYears / 100;
+			const totalPayment = loanAmount + totalInterest;
+			const monthlyPayment = totalPayment / (loanYears * 12);
+
+			// Display the input values and monthly payment
+			document.getElementById("car-price-display-tab-1").textContent = numberWithCommas(carPrice);
+			document.getElementById("down-payment-display-tab-1").textContent = numberWithCommas(downPayment);
+			document.getElementById("interest-rate-display-tab-1").textContent = annualInterestRate.toFixed(1);
+			document.getElementById("loan-years-display-tab-1").textContent = loanYears;
+			document.getElementById("monthly-installment-tab-1").textContent = monthlyPayment.toFixed(2);
+			document.getElementById("loan-amount-tab-1").textContent = numberWithCommas(loanAmount);
+			document.getElementById("total-interest-tab-1").textContent = numberWithCommas(totalInterest.toFixed(2));
+			document.getElementById("total-payment-tab-1").textContent = numberWithCommas(totalPayment);
+		}
+
+		function numberWithCommas(number) {
+			// Add commas to the number for display
+			return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+		}
+
+		function calculatePrice() {
+			const monthlyIncome = parseInt(document.getElementById("monthly-income").value)
+			const installmentPercentage = parseInt(document.getElementById("installment-percentage").value)
+			const downPaymentPercentage = parseInt(document.getElementById("downpayment-percentage").value)
+			const annualInterestRate = parseFloat(document.getElementById("interest-rate-tab-2").value)
+			const loanYears = parseInt(document.getElementById("loan-years-tab-2").value)
+
+			let installment = installmentPercentage * monthlyIncome / 100
+
+			let carPrice = installment * loanYears * 12 / ((1 + (annualInterestRate * loanYears / 100)) * (1 - (downPaymentPercentage / 100)))
+			let downPayment = carPrice * downPaymentPercentage / 100;
+			document.getElementById("dp-100-alert").textContent = "";
+			if (downPaymentPercentage == 100) {
+				installment = 0
+				document.getElementById("dp-100-alert").textContent = "If your downpayment percentage is 100%, that means you pay full for your car. Lump sum already (-_-)"
+			}
+
+
+
+			document.getElementById("monthly-income-display").textContent = numberWithCommas(monthlyIncome);
+			document.getElementById("installment-percentage-display").textContent = installmentPercentage;
+			document.getElementById("downpayment-percentage-display").textContent = downPaymentPercentage;
+			document.getElementById("interest-rate-display-tab-2").textContent = annualInterestRate.toFixed(1);
+			document.getElementById("loan-years-display-tab-2").textContent = loanYears;
+			document.getElementById("car-price-tab-2").textContent = numberWithCommas(Math.round(carPrice));
+			document.getElementById("down-payment-tab-2").textContent = numberWithCommas(Math.round(downPayment));
+			document.getElementById("monthly-installment-tab-2").textContent = installment.toFixed(2);
+
+
+		}
+	</script>
+</body>
+
+</html>
